@@ -5,7 +5,7 @@ use std::str::Lines;
 fn main() {
     let input_file_location: String = String::from("input.txt");
     let lines: Vec<String> = file_to_vector(input_file_location);
-    
+
     /* 
     First attempt before I realised I could do this as a Vector of Tuples and use map/reduce/etc.
     
@@ -132,7 +132,21 @@ fn extract_lists_tuples(input: Vec<String>) -> Vec<(i32, i32)>
 //Mostly I am showing off here.
 fn similarity_calculator(input: Vec<(i32, i32)>) -> i32 {
     let mut similarity = 0;
+    //First we iterate through the first half of each tuple....
     for (pos, element) in input.iter().enumerate() {
+        /* 
+        The only really clever thing in here is that I realised that by subtracting the current left hand value from all of the values in the right hand list, only those matching will equal 0.
+
+        We therefore do the following:
+        - We are already in a loop through the collection, so we use element.0 (which is the left-hand value of the current tuple) and we subtract that from every right hand value in the collection;
+        - Only those elements matching our left hand number will then equate to 0, so we can simply filter out non-zero values;
+        - That gets us a collection of 0s, where the number of items in the collection tell us how many occurrences there have been in the entire right hand side of the collection of the current left-handed value.
+        - We can use fold to basically add 1 to an accumulator value for each element in the collection and this accumulator value starts at 0. 
+        - This gives us the collection size, which we then multiply by the left-hand value (element.0) and add the multiplication product to the similarity accumulator value.
+        - In most cases, the left hand value does not occur in the right hand list, and so the collection 'to be folded' is empty. This means the similarity value doesn't increment for those cases.
+
+        --- I couldn't get this to work with reduce so I've used fold instead.
+        */
         similarity += element.0 * input.iter().map(| x | x.1 - element.0).filter(| y | *y == 0).fold(0, | acc, element | acc + 1 );
         
     }
