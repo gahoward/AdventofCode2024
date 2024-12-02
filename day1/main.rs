@@ -132,6 +132,7 @@ fn extract_lists_tuples(input: Vec<String>) -> Vec<(i32, i32)>
 //Mostly I am showing off here.
 fn similarity_calculator(input: Vec<(i32, i32)>) -> i32 {
     let mut similarity = 0;
+
     //First we iterate through the first half of each tuple....
     for (pos, element) in input.iter().enumerate() {
         /* 
